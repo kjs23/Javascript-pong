@@ -58,8 +58,8 @@ $(document).ready(function() {
 			height: $('#ball').height(),
 			leftPos: 165,
 			topPos: 294,
-			velX: 1,
-			velY: 1
+			velX: 2,
+			velY: 8
 		},
 		player1: {
 			speed: 10,
@@ -96,22 +96,22 @@ $(document).ready(function() {
 			switch(e.which)
 			{
 				// player1 presses the left arrow
-				case defaults.player1.left:			console.log("left arrow down");
+				case defaults.player1.left:			//console.log("left arrow down");
 													defaults.player1.keyLeft = true;
 													player1Move();
 													break;
 				// player1 presses the right arrow
-				case defaults.player1.right:		console.log("right arrow down");
+				case defaults.player1.right:		//console.log("right arrow down");
 													defaults.player1.keyRight = true;
 													player1Move();
 													break;
 				// player2 presses the a key
-				case defaults.player2.left:			console.log("a key down");
+				case defaults.player2.left:			//console.log("a key down");
 													defaults.player2.keyLeft = true;
 													player2Move();
 													break;
 				// player2 presses the s key
-				case defaults.player2.right:		console.log("s key down");
+				case defaults.player2.right:		//console.log("s key down");
 													defaults.player2.keyRight = true;
 													player2Move();
 													break;
@@ -123,20 +123,20 @@ $(document).ready(function() {
 			switch(e.which)
 			{
 				// player1 releases the left arrow
-				case defaults.player1.left:			console.log("left arrow up");
+				case defaults.player1.left:			//console.log("left arrow up");
 													defaults.player1.keyLeft = false;
 
 													break;
 				// player1 releases the right arrow
-				case defaults.player1.right:		console.log("right arrow up");
+				case defaults.player1.right:		//console.log("right arrow up");
 													defaults.player1.keyRight = false;
 													break;
 				// player2 releases the a key
-				case defaults.player2.left:			console.log("a key up");
+				case defaults.player2.left:			//console.log("a key up");
 													defaults.player2.keyLeft = false;
 													break;
 				// player2 releases the s key
-				case defaults.player2.right:		console.log("s key up");
+				case defaults.player2.right:		//console.log("s key up");
 													defaults.player2.keyRight = false;
 													break;
 			}
@@ -171,6 +171,10 @@ $(document).ready(function() {
 		$('#player2').css('left', defaults.player2.leftPos);
 	};
 
+		// random number generator
+		function getRandomInt (min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
 
 
 
@@ -190,13 +194,48 @@ $(document).ready(function() {
 
 
 		// if ball bounces off bottom of court
-		if(defaults.ball.topPos >= 585){
+		if(defaults.ball.topPos >= 685){
 			defaults.ball.velY = -defaults.ball.velY;
 		}
 
 
 		// if ball bounces off top of court
-		if(defaults.ball.topPos <= 0){
+		if(defaults.ball.topPos <= -100){
+			defaults.ball.velY = -defaults.ball.velY;
+		}
+		
+		
+		//paddle collision
+		if(defaults.ball.topPos<=10){
+			var pos = $("#player1").position();
+			if(defaults.ball.leftPos>=pos.left-5 && defaults.ball.leftPos<=pos.left+55){
+				$("#player1").addClass('active');
+					if(pos.left <= 410){
+						defaults.ball.velX = +defaults.ball.velX;
+					} else if(pos.left >= 460){
+						defaults.ball.velX = -defaults.ball.velX;
+					}
+				defaults.ball.velY = -defaults.ball.velY;
+				defaults.ball.topPos = 10;
+				setTimeout(function(){ $("#player1").removeClass('active'); },200);
+				
+			}
+		}
+		
+		if(defaults.ball.topPos>=530){
+		//console.log('boo-Ya!');
+			var pos2 = $("#player2").position();
+			if(defaults.ball.leftPos>=pos2.left-5 && defaults.ball.leftPos<=pos2.left+55){
+				$("#player2").addClass('active');
+				defaults.ball.velY = -defaults.ball.velY;
+				defaults.ball.topPos = 530;
+				setTimeout(function(){ $("#player2").removeClass('active'); },200);
+			}
+		}
+		
+		// adds a bounce using a ramdom number
+		if (getRandomInt(375,620) <= defaults.ball.topPos){
+		alert(getRandomInt(375,620));
 			defaults.ball.velY = -defaults.ball.velY;
 		}
 
@@ -206,16 +245,14 @@ $(document).ready(function() {
         $('#ball').css('left', defaults.ball.leftPos);
         $('#ball').css('top', defaults.ball.topPos);
 
-        console.log(defaults.ball.velY);
-
 	};
 
 	var wallColisionCheck = function(){
 
 	};
 
-	setInterval(moveBall, 10);
+	setInterval(moveBall, 60);
 
-    console.log('jQuery Loaded');
+    //console.log('jQuery Loaded');
 
 });
